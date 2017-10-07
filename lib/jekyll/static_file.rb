@@ -33,6 +33,7 @@ module Jekyll
       @name = name
       @collection = collection
       @relative_path = File.join(*[@dir, @name].compact)
+      #puts " @relative_path = #{@relative_path}"
       @extname = File.extname(@name)
       @data = @site.frontmatter_defaults.all(relative_path, type)
     end
@@ -91,13 +92,15 @@ module Jekyll
     # Returns false if the file was not modified since last time (no-op).
     def write(dest)
       dest_path = destination(dest)
-
+      #puts " write(dest) = #{dest}"
       return false if File.exist?(dest_path) && !modified?
       self.class.mtimes[path] = mtime
 
       FileUtils.mkdir_p(File.dirname(dest_path))
       FileUtils.rm(dest_path) if File.exist?(dest_path)
-      copy_file(dest_path)
+      if @collection.nil?
+        copy_file(dest_path)
+      end
 
       true
     end
@@ -148,6 +151,7 @@ module Jekyll
 
     private
     def copy_file(dest_path)
+      #puts " dest_path = #{dest_path}"
       if @site.safe || Jekyll.env == "production"
         FileUtils.cp(path, dest_path)
       else
