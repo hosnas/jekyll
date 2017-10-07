@@ -230,23 +230,25 @@ module Jekyll
     # Returns the Hash: { attr => posts } where
     #   attr  - One of the values for the requested attribute.
     #   posts - The Array of Posts with the given attr value.
-    def post_attr_hash(post_attr)
+    def doc_attr_hash(doc_attr, documents)
       # Build a hash map based on the specified post attribute ( post attr =>
       # array of posts ) then sort each array in reverse order.
       hash = Hash.new { |h, key| h[key] = [] }
-      posts.docs.each do |p|
-        p.data[post_attr].each { |t| hash[t] << p } if p.data[post_attr]
+      documents.each do |d|
+        d.data[doc_attr].each { |t| hash[t] << d } if d.data[doc_attr]
       end
-      hash.each_value { |posts| posts.sort!.reverse! }
+      hash.values.each { |documents| documents.sort!.reverse! }
       hash
     end
-
+    def post_attr_hash(post_attr)
+      doc_attr_hash(post_attr, posts.docs)
+    end
     def tags
-      post_attr_hash("tags")
+      doc_attr_hash("tags", documents)
     end
 
     def categories
-      post_attr_hash("categories")
+      doc_attr_hash("categories", documents)
     end
 
     # Prepare site data for site payload. The method maintains backward compatibility
