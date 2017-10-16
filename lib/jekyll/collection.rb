@@ -111,7 +111,7 @@ module Jekyll
     #   is stored on the filesystem.
     def directory
       @directory ||= site.in_source_dir(
-        File.join(site.config["collections_dir"], "_#{label}")
+       metadata['relative_directory'] && site.in_source_dir(metadata['relative_directory']) || File.join(site.config["collections_dir"], "_#{label}")
       )
     end
 
